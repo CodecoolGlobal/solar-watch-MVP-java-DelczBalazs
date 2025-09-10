@@ -53,7 +53,7 @@ public class SolarWatchService {
                 city, country, state,
                 new SunTimesResponseDto.Coordinates(coords.lat(), coords.lon()),
                 targetDate,
-                zone.getId(),
+                timezoneLabel,
                 utc.sunrise().withZoneSameInstant(zone).toOffsetDateTime(),
                 utc.sunset().withZoneSameInstant(zone).toOffsetDateTime(),
                 new SunTimesResponseDto.SourceMeta("openweathermap", "sunrise-sunset.org")
