@@ -28,8 +28,8 @@ public class SolarWatchController {
         @RequestParam(required = false) String country,
         @RequestParam(required = false) String state,
         @RequestParam(required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-        @RequestParam(defaultValue = "UTC") String timezone
+        @RequestParam(defaultValue = "UTC") String tz
     ) {
-        return service.getSunTimes(city, country, state, date, timezone);
+        return service.getSunTimes(city, country, state, date, tz);
     }
 }

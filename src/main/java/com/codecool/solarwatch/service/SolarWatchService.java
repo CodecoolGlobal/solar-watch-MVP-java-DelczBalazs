@@ -48,6 +48,11 @@ public class SolarWatchService {
         UtcTimes utc   = fetchSunriseSunsetUtc(coords.lat(), coords.lon(), targetDate); // (2) lat/lon/date -> sunrise/sunset (UTC)
         String timezoneLabel = (zone instanceof java.time.ZoneOffset) ? "UTC" : zone.getId();
 
+
+        System.out.println("DEBUG tz: " + zone);
+        System.out.println("DEBUG converted sunrise: " +
+                utc.sunrise().withZoneSameInstant(zone).toOffsetDateTime());
+
         // (3) convert to requested timezone and build our response DTO
         return new SunTimesResponseDto(
                 city, country, state,
@@ -111,7 +116,7 @@ public class SolarWatchService {
     // C) timezone parsing: default UTC, or validate IANA id (e.g. "Europe/Budapest")
     private ZoneId parseZoneOrThrow(String tz) {
         if (tz == null || tz.isBlank() || "UTC".equalsIgnoreCase(tz)) return ZoneOffset.UTC;
-        try { return ZoneId.of(tz); }
+        try { return ZoneId.of(tz.trim()); }
         catch (Exception e) { throw new InvalidTimezoneException(tz); }
     }
 }
