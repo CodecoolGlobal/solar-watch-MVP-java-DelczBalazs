@@ -4,16 +4,22 @@ import com.codecool.solarwatch.exception.CityNotFoundException;
 import com.codecool.solarwatch.exception.InvalidTimezoneException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.Instant;
 
 @RestControllerAdvice
 public class SolarWatchControllerAdvice {
 
-    public record ApiError(Instant timestamp, int status, String error, String code, String message, String path) {}
+    // Consistent error payload
+    public record ApiError(
+            Instant timestamp, int status, String error, String code, String message, String path
+    ) {}
 
     @ExceptionHandler(CityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -31,5 +37,35 @@ public class SolarWatchControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiError handleBadArgs(HttpServletRequest req, IllegalArgumentException ex) {
         return new ApiError(Instant.now(), 400, "Bad request", "INVALID_INPUT", ex.getMessage(), req.getRequestURI());
+    }
+
+    // Missing required query param (e.g., city)
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiError handleMissingParam(HttpServletRequest req, MissingServletRequestParameterException ex) {
+        return new ApiError(Instant.now(), 400, "Bad request", "MISSING_PARAMETER", ex.getMessage(), req.getRequestURI());
+    }
+
+    // Wrong type / bad format (e.g., date not ISO yyyy-MM-dd)
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ApiError handleTypeMismatch(HttpServletRequest req, MethodArgumentTypeMismatchException ex) {
+        String raw = String.valueOf(ex.getValue());
+        String msg = "Invalid value for parameter '" + ex.getName() + "': " + raw.strip();
+        return new ApiError(Instant.now(), 400, "Bad request", "TYPE_MISMATCH", msg, req.getRequestURI());
+    }
+
+    // Upstream API failures (OpenWeather / sunrise-sunset)
+    @ExceptionHandler(RestClientException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    ApiError handleUpstream(HttpServletRequest req, RestClientException ex) {
+        return new ApiError(Instant.now(), 502, "Bad Gateway", "UPSTREAM_ERROR", "Failed to reach external API", req.getRequestURI());
+    }
+
+    // Last-resort catch-all
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    ApiError handleGeneric(HttpServletRequest req, Exception ex) {
+        return new ApiError(Instant.now(), 500, "Internal Server Error", "INTERNAL_ERROR", "Unexpected error occurred", req.getRequestURI());
     }
 }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.test.web.client.ExpectedCount.once;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withServerError;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
@@ -102,5 +104,27 @@ class SolarWatchServiceTest {
         assertThrows(InvalidTimezoneException.class, () ->
                 service.getSunTimes("Budapest", "HU", null, LocalDate.now(), "Europe/Buda pest "));
         server.verify(); // nothing expected, nothing executed
+    }
+
+    @Test
+    void getSunTimes_upstreamServerError_bubblesRestClientException() {
+        // Geocoding OK
+        server.expect(once(), requestTo(org.hamcrest.Matchers.containsString(
+                        owBase + "/geo/1.0/direct?q=Budapest,HU&limit=1&appid=" + apiKey)))
+                .andExpect(method(GET))
+                .andRespond(withSuccess("""
+                [{"name":"Budapest","lat":47.4979,"lon":19.0402,"country":"HU"}]
+            """, MediaType.APPLICATION_JSON));
+
+        // Sunrise API returns 500
+        server.expect(once(), requestTo(org.hamcrest.Matchers.containsString(
+                        sunBase + "/json?lat=47.4979&lng=19.0402")))
+                .andExpect(method(GET))
+                .andRespond(withServerError());
+
+        assertThrows(RestClientException.class, () ->
+                service.getSunTimes("Budapest", "HU", null, LocalDate.parse("2025-08-23"), "UTC"));
+
+        server.verify();
     }
 }

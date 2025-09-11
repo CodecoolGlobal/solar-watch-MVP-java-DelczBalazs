@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -102,5 +103,20 @@ class SolarWatchControllerTest {
                         .param("country","HU")
                         .param("date","23-08-2025")) // wrong format; expect ISO yyyy-MM-dd
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getSunTimes_upstreamFailure_returns502() throws Exception {
+        // Arrange: mock service to simulate upstream outage
+        Mockito.when(service.getSunTimes(eq("Budapest"), eq("HU"), isNull(), any(), anyString()))
+                .thenThrow(new RestClientException("Upstream down"));
+
+        // Act + Assert
+        mvc.perform(get("/api/solarwatch")
+                        .param("city", "Budapest")
+                        .param("country", "HU"))
+                .andExpect(status().isBadGateway())
+                .andExpect(jsonPath("$.code").value("UPSTREAM_ERROR"))
+                .andExpect(jsonPath("$.error").value("Bad Gateway"));
     }
 }
