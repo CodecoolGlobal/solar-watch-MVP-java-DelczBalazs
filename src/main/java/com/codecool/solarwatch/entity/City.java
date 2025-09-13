@@ -35,22 +35,42 @@ public class City {
 
     // Prefer BigDecimal to avoid double rounding in DB
     @Column(precision = 9, scale = 6, nullable = false)
-    private BigDecimal lat;
+    private double lat;
 
     @Column(precision = 9, scale = 6, nullable = false)
-    private BigDecimal lon;
+    private double lon;
 
     // Optional provenance fields (nice on CV)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
     protected City() {}
 
-    public City(String name, String country, String state, BigDecimal lat, BigDecimal lon) {
+    public City(String name, String country, String state, double lat, double lon) {
         this.name = name;
         this.country = country != null ? country.toUpperCase() : null;
         this.state = state;
         this.lat = lat;
         this.lon = lon;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getState() {
+        return state;
     }
 
     // getters/setters ...

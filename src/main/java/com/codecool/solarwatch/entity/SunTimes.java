@@ -50,5 +50,13 @@ public class SunTimes {
         this.dayLengthSec = dayLengthSec;
     }
 
+    public Instant getSunriseUtc() {
+        return sunriseUtc;
+    }
+
+    public Instant getSunsetUtc() {
+        return sunsetUtc;
+    }
+
     // getters/setters ...
 }

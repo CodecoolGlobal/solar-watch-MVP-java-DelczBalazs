@@ -1,12 +1,9 @@
 package com.codecool.solarwatch.controller;
 
 import com.codecool.solarwatch.model.SunTimesResponseDto;
-import com.codecool.solarwatch.service.SolarWatchService;
+import com.codecool.solarwatch.service.SolarWatchFacade;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -14,26 +11,20 @@ import java.time.LocalDate;
 @RequestMapping("/api/solarwatch")
 public class SolarWatchController {
 
-    private final SolarWatchService service;
+    private final SolarWatchFacade facade;
 
-    public SolarWatchController(SolarWatchService service) {
-        this.service = service;
+    public SolarWatchController(SolarWatchFacade facade) {
+        this.facade = facade;
     }
 
     @GetMapping
     public SunTimesResponseDto getSunTimes(
-        @RequestParam String city,
-        @RequestParam(required = false) String country,
-        @RequestParam(required = false) String state,
-        @RequestParam(required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-        @RequestParam(defaultValue = "UTC") String tz
+            @RequestParam String city,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String state,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(defaultValue = "UTC") String tz
     ) {
-        // sanitize all incoming strings (null-safe)
-        String cCity    = city == null    ? null : city.strip();
-        String cCountry = country == null ? null : country.strip();
-        String cState   = state == null   ? null : state.strip();
-        String cTz      = tz == null      ? null : tz.strip();
-
-        return service.getSunTimes(cCity, cCountry, cState, date, cTz);
+        return facade.getSunTimes(city, country, state, date, tz);
     }
 }
