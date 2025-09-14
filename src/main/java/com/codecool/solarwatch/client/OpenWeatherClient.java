@@ -24,11 +24,12 @@ public class OpenWeatherClient {
     }
 
     public OpenWeatherDirectItemDto fetchFirstMatch(String q) {
-        URI url = UriComponentsBuilder.fromHttpUrl(base + "/geo/1.0/direct")
+        URI url = UriComponentsBuilder.fromUriString(base + "/geo/1.0/direct")
                 .queryParam("q", q)
                 .queryParam("limit", 1)
                 .queryParam("appid", apiKey)
-                .build(true)
+                .build()
+                .encode()
                 .toUri();
 
         OpenWeatherDirectItemDto[] items = http.getForObject(url, OpenWeatherDirectItemDto[].class);

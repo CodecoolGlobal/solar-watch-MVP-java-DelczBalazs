@@ -23,12 +23,13 @@ public class SunriseSunsetClient {
 
     /** Returns UTC instants for sunrise/sunset for given lat/lon/date. */
     public UtcTimes fetchUtc(double lat, double lon, LocalDate date) {
-        URI url = UriComponentsBuilder.fromHttpUrl(base + "/json")
+        URI url = UriComponentsBuilder.fromUriString(base + "/json")
                 .queryParam("lat", lat)
                 .queryParam("lng", lon)
                 .queryParam("date", date)
                 .queryParam("formatted", 0) // ISO 8601 with UTC offset
-                .build(true)
+                .build()
+                .encode()
                 .toUri();
 
         SunriseSunsetResponseDto resp = http.getForObject(url, SunriseSunsetResponseDto.class);

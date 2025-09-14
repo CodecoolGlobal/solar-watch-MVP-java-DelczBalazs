@@ -22,11 +22,11 @@ public class SolarWatchFacade {
     public SunTimesResponseDto getSunTimes(String city, String country, String state, LocalDate date, String tz) {
         // Default date to "today" in requested zone (or UTC if null)
         ZoneId zone = parseZoneOrThrow(tz);
+        String tzOut = (zone.equals(ZoneOffset.UTC) ? "UTC" : zone.getId());
         LocalDate targetDate = (date != null) ? date : LocalDate.now(zone);
 
         City c = cityService.findOrFetch(safe(city), safe(country), safe(state));
-        /*double lat = ((BigDecimal) c.getClass().getDeclaredFields()[0] != null) ? 0 : 0; // (not used; see below)*/
-        // Better: expose getters on City; assuming you add getLat()/getLon()
+
         double plat = c.getLat();
         double plon = c.getLon();
 
@@ -42,7 +42,7 @@ public class SolarWatchFacade {
                 c.getState(),
                 new SunTimesResponseDto.Coordinates(plat, plon),
                 targetDate,
-                zone.getId(),
+                tzOut,
                 sunrise,
                 sunset,
                 new SunTimesResponseDto.SourceMeta("db+openweather", "db+sunrise-sunset")
@@ -52,7 +52,7 @@ public class SolarWatchFacade {
     private ZoneId parseZoneOrThrow(String tz) {
         if (tz == null || tz.isBlank() || "UTC".equalsIgnoreCase(tz)) return ZoneOffset.UTC;
         try { return ZoneId.of(tz.trim()); }
-        catch (Exception e) { throw new InvalidTimezoneException(tz); }
+        catch (Exception e) { throw new InvalidTimezoneException(tz.trim()); }
     }
 
     private String safe(String s) { return s == null ? null : s.strip(); }

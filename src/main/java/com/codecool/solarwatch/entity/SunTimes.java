@@ -58,5 +58,8 @@ public class SunTimes {
         return sunsetUtc;
     }
 
-    // getters/setters ...
+    public Integer getDayLengthSec() {
+        return dayLengthSec;
+    }
+
 }

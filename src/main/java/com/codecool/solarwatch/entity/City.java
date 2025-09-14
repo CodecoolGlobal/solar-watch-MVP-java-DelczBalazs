@@ -34,10 +34,10 @@ public class City {
     private String state;
 
     // Prefer BigDecimal to avoid double rounding in DB
-    @Column(precision = 9, scale = 6, nullable = false)
+    /*@Column(precision = 9, scale = 6, nullable = false)*/
     private double lat;
 
-    @Column(precision = 9, scale = 6, nullable = false)
+    /*@Column(precision = 9, scale = 6, nullable = false)*/
     private double lon;
 
     // Optional provenance fields (nice on CV)
@@ -73,5 +73,4 @@ public class City {
         return state;
     }
 
-    // getters/setters ...
 }
