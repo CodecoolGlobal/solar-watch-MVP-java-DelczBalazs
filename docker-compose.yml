@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: solarwatch_db
+    environment:
+      POSTGRES_DB: solarwatch
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME} -d solarwatch"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  solarwatch-backend:
+    build: .
+    image: solarwatch-backend
+    container_name: solarwatch-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DB_URL: jdbc:postgresql://db:5432/solarwatch
+
+volumes:
+  pgdata:
