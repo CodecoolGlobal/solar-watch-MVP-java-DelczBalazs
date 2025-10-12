@@ -3,7 +3,7 @@ package com.codecool.solarwatch.service;
 import com.codecool.solarwatch.entity.City;
 import com.codecool.solarwatch.entity.SunTimes;
 import com.codecool.solarwatch.exception.InvalidTimezoneException;
-import com.codecool.solarwatch.model.SunTimesResponseDto;
+import com.codecool.solarwatch.dto.SunTimesResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.time.*;

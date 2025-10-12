@@ -1,6 +1,6 @@
 package com.codecool.solarwatch.client;
 
-import com.codecool.solarwatch.model.sunrise.SunriseSunsetResponseDto;
+import com.codecool.solarwatch.dto.sunrise.SunriseSunsetResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;

@@ -4,14 +4,17 @@ import com.codecool.solarwatch.exception.CityNotFoundException;
 import com.codecool.solarwatch.exception.InvalidTimezoneException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.Map;
 
 @RestControllerAdvice
 public class SolarWatchControllerAdvice {
@@ -47,7 +50,7 @@ public class SolarWatchControllerAdvice {
     }
 
     // Wrong type / bad format (e.g., date not ISO yyyy-MM-dd)
-    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiError handleTypeMismatch(HttpServletRequest req, MethodArgumentTypeMismatchException ex) {
         String raw = String.valueOf(ex.getValue());
@@ -62,10 +65,31 @@ public class SolarWatchControllerAdvice {
         return new ApiError(Instant.now(), 502, "Bad Gateway", "UPSTREAM_ERROR", "Failed to reach external API", req.getRequestURI());
     }
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Object> handleRse(ResponseStatusException ex,
+                                            HttpServletRequest request) {
+        var status = ex.getStatusCode();
+        var body = Map.of(
+                "timestamp", java.time.Instant.now().toString(),
+                "status", status.value(),
+                "error", status.toString(),
+                "message", ex.getReason(),
+                "path", request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(body);
+    }
+
     // Last-resort catch-all
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     ApiError handleGeneric(HttpServletRequest req, Exception ex) {
-        return new ApiError(Instant.now(), 500, "Internal Server Error", "INTERNAL_ERROR", "Unexpected error occurred", req.getRequestURI());
+        if (ex instanceof org.springframework.web.server.ResponseStatusException rse) {
+            throw rse; // let the handler above format it
+        }
+        if (ex instanceof org.springframework.security.core.AuthenticationException) {
+            throw (org.springframework.security.core.AuthenticationException) ex; // security handles as 401/403
+        }
+        return new ApiError(Instant.now(), 500, "Internal Server Error",
+                "INTERNAL_ERROR", "Unexpected error occurred", req.getRequestURI());
     }
 }

@@ -3,7 +3,7 @@ package com.codecool.solarwatch.service;
 import com.codecool.solarwatch.client.OpenWeatherClient;
 import com.codecool.solarwatch.entity.City;
 import com.codecool.solarwatch.exception.CityNotFoundException;
-import com.codecool.solarwatch.model.openweather.OpenWeatherDirectItemDto;
+import com.codecool.solarwatch.dto.openweather.OpenWeatherDirectItemDto;
 import com.codecool.solarwatch.repository.CityRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

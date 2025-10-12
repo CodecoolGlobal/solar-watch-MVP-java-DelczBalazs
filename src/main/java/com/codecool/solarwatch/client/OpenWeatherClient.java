@@ -1,6 +1,6 @@
 package com.codecool.solarwatch.client;
 
-import com.codecool.solarwatch.model.openweather.OpenWeatherDirectItemDto;
+import com.codecool.solarwatch.dto.openweather.OpenWeatherDirectItemDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;

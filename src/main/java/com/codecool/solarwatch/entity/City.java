@@ -1,76 +1,48 @@
 package com.codecool.solarwatch.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA
 @Entity
-@Table(
-        name = "cities",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uq_city_name_country_state", columnNames = {"name", "country", "state"})
-        },
-        indexes = {
-                @Index(name = "idx_city_name", columnList = "name"),
-                @Index(name = "idx_city_country", columnList = "country"),
-                @Index(name = "idx_city_state", columnList = "state")
-        }
-)
+@Table(name = "cities")
 public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE) // forbid setId
     private Long id;
 
-    // Keep raw name as provided by provider (case-insensitive search in repo)
     @Column(nullable = false)
     private String name;
 
-    // ISO 3166-1 alpha-2/alpha-3 (store uppercase for consistency)
-    @Column(length = 3)
+    @Column(nullable = false)
     private String country;
 
-    // Optional admin area (store as-is, can be null)
     private String state;
 
-    // Prefer BigDecimal to avoid double rounding in DB
-    /*@Column(precision = 9, scale = 6, nullable = false)*/
+    @Column(nullable = false)
     private double lat;
 
-    /*@Column(precision = 9, scale = 6, nullable = false)*/
+    @Column(nullable = false)
     private double lon;
 
-    // Optional provenance fields (nice on CV)
-    private OffsetDateTime createdAt = OffsetDateTime.now();
-
-    protected City() {}
-
+    // <-- CityService expects this constructor
     public City(String name, String country, String state, double lat, double lon) {
         this.name = name;
-        this.country = country != null ? country.toUpperCase() : null;
+        this.country = country;
         this.state = state;
         this.lat = lat;
         this.lon = lon;
     }
 
-    public double getLat() {
-        return lat;
-    }
-
-    public double getLon() {
-        return lon;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public String getState() {
-        return state;
-    }
-
+    // optional, nice for admin edits (no generic setters, never touch id)
+    public void rename(String newName) { this.name = newName; }
+    public void recodeCountry(String newCountry) { this.country = newCountry; }
+    public void recodeState(String newState) { this.state = newState; }
+    public void moveTo(double newLat, double newLon) { this.lat = newLat; this.lon = newLon; }
 }

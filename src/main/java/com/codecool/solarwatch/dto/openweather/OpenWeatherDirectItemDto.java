@@ -1,4 +1,4 @@
-package com.codecool.solarwatch.model.openweather;
+package com.codecool.solarwatch.dto.openweather;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

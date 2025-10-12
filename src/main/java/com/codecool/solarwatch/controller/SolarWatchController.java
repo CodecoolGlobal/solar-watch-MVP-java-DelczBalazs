@@ -1,6 +1,6 @@
 package com.codecool.solarwatch.controller;
 
-import com.codecool.solarwatch.model.SunTimesResponseDto;
+import com.codecool.solarwatch.dto.SunTimesResponseDto;
 import com.codecool.solarwatch.service.SolarWatchFacade;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;

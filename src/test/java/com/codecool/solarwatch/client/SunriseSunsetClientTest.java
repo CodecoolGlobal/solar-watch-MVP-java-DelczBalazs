@@ -1,6 +1,6 @@
 package com.codecool.solarwatch.client;
 
-import com.codecool.solarwatch.model.sunrise.SunriseSunsetResponseDto;
+import com.codecool.solarwatch.dto.sunrise.SunriseSunsetResponseDto;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.web.client.RestTemplate;
