@@ -11,7 +11,6 @@ import java.time.Instant;
 public class SunTimesMapper {
 
     public SunTimes toEntity(SunTimesUpsertDto d) {
-        // If admin never creates SunTimes, you can remove this. Kept for completeness.
         throw new UnsupportedOperationException("Provide city/date to create SunTimes via service");
     }
 

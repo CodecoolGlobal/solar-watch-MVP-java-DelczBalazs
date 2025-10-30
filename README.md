@@ -42,9 +42,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-<p align="center">
+<p>
 A simple demo app showcasing user authentication and integration with external APIs. The Spring Boot backend consumes public sunrise/sunset APIs and exposes secured REST endpoints; the React + Vite + Tailwind frontend provides a minimal UI for registering, logging in, and viewing sunrise/sunset times for a chosen city. Ideal as a small example of authentication, API consumption, and a full-stack Java/React setup.
-</p>
+</p
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
