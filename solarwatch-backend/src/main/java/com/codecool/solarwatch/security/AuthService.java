@@ -27,12 +27,9 @@ public class AuthService {
     private final JwtService jwt;
 
     public void register(RegisterRequest req) {
-        // normalize if you want (optional but recommended)
         final String email = req.getEmail().trim();
 
-        // fast path: app-level check
         if (users.existsByEmail(email)) {
-            System.out.println("Email already registered");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered");
         }
 

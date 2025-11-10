@@ -20,7 +20,7 @@ public class SunTimes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE) // forbid setId
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @ManyToOne(optional = false)
@@ -39,7 +39,7 @@ public class SunTimes {
     @Column(nullable = false)
     private Integer dayLengthSec;
 
-    // <-- SunTimesService expects this constructor
+    // SunTimesService expects this constructor
     public SunTimes(City city, LocalDate date, Instant sunriseUtc, Instant sunsetUtc, Integer dayLengthSec) {
         this.city = city;
         this.date = date;

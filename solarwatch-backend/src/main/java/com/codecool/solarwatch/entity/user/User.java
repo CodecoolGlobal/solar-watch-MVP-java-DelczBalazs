@@ -20,14 +20,14 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE) // forbid setId
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
-    private String password; // store encoded
+    private String password;
 
     private String fullName;
 

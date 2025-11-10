@@ -14,7 +14,7 @@ public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE) // forbid setId
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(nullable = false)
@@ -31,7 +31,7 @@ public class City {
     @Column(nullable = false)
     private double lon;
 
-    // <-- CityService expects this constructor
+    // CityService expects this constructor
     public City(String name, String country, String state, double lat, double lon) {
         this.name = name;
         this.country = country;
@@ -40,7 +40,7 @@ public class City {
         this.lon = lon;
     }
 
-    // optional, nice for admin edits (no generic setters, never touch id)
+    // for admin edits
     public void rename(String newName) { this.name = newName; }
     public void recodeCountry(String newCountry) { this.country = newCountry; }
     public void recodeState(String newState) { this.state = newState; }

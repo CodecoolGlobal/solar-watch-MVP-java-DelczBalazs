@@ -1,15 +1,17 @@
 package com.codecool.solarwatch.mapper;
 
+import com.codecool.solarwatch.dto.admin.CityAdminDto;
 import com.codecool.solarwatch.dto.admin.CityPatchDto;
 import com.codecool.solarwatch.dto.admin.CityUpsertDto;
 import com.codecool.solarwatch.entity.City;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class CityMapper {
 
     public City toEntity(CityUpsertDto d) {
-        // City has public ctor: (String name, String country, String state, double lat, double lon)
         return new City(d.name(), d.country(), d.state(), d.lat(), d.lon());
     }
 
@@ -28,5 +30,13 @@ public class CityMapper {
             double lon = (lonBox != null) ? lonBox : e.getLon();
             e.moveTo(lat, lon);
         }
+    }
+
+    public CityAdminDto toDto(City e) {
+        return new CityAdminDto(e.getId(), e.getName(), e.getCountry(), e.getState(), e.getLat(), e.getLon());
+    }
+
+    public List<CityAdminDto> toDtoList(List<City> entities) {
+        return entities.stream().map(this::toDto).toList();
     }
 }

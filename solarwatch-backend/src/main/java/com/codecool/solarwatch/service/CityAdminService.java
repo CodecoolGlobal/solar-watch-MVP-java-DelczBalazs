@@ -1,5 +1,6 @@
 package com.codecool.solarwatch.service;
 
+import com.codecool.solarwatch.dto.admin.CityAdminDto;
 import com.codecool.solarwatch.dto.admin.CityPatchDto;
 import com.codecool.solarwatch.dto.admin.CityUpsertDto;
 import com.codecool.solarwatch.entity.City;
@@ -16,19 +17,19 @@ public class CityAdminService {
     private final CityRepository repo;
     private final CityMapper mapper;
 
-    public List<City> findAll() { return repo.findAll(); }
+    public List<CityAdminDto> findAll() { return mapper.toDtoList(repo.findAll()); }
 
     @Transactional
-    public City create(CityUpsertDto dto) {
+    public CityAdminDto create(CityUpsertDto dto) {
         City e = mapper.toEntity(dto);
-        return repo.save(e);
+        return mapper.toDto(repo.save(e));
     }
 
     @Transactional
-    public City patch(Long id, CityPatchDto dto) {
+    public CityAdminDto patch(Long id, CityPatchDto dto) {
         City e = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("City not found: " + id));
         mapper.patch(e, dto);
-        return e; // JPA dirty checking persists
+        return mapper.toDto(e);
     }
 
     @Transactional

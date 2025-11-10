@@ -1,5 +1,6 @@
 package com.codecool.solarwatch.service;
 
+import com.codecool.solarwatch.dto.admin.SunTimesAdminDto;
 import com.codecool.solarwatch.dto.admin.SunTimesPatchDto;
 import com.codecool.solarwatch.dto.admin.SunTimesUpsertDto;
 import com.codecool.solarwatch.entity.SunTimes;
@@ -16,19 +17,19 @@ public class SunTimesAdminService {
     private final SunTimesRepository repo;
     private final SunTimesMapper mapper;
 
-    public List<SunTimes> findAll() { return repo.findAll(); }
+    public List<SunTimesAdminDto> findAll() { return mapper.toDtoList(repo.findAll()); }
 
     @Transactional
-    public SunTimes create(SunTimesUpsertDto dto) {
+    public SunTimesAdminDto create(SunTimesUpsertDto dto) {
         SunTimes e = mapper.toEntity(dto);
-        return repo.save(e);
+        return mapper.toDto(repo.save(e));
     }
 
     @Transactional
-    public SunTimes patch(Long id, SunTimesPatchDto dto) {
+    public SunTimesAdminDto patch(Long id, SunTimesPatchDto dto) {
         SunTimes e = repo.findById(id).orElseThrow(() -> new IllegalArgumentException("SunTimes not found: " + id));
         mapper.patch(e, dto);
-        return e;
+        return mapper.toDto(e);
     }
 
     @Transactional

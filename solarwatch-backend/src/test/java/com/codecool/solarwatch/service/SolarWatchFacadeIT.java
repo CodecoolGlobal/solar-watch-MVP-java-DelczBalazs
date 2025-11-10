@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@Import(SolarWatchFacade.class) // csak a facade bean
+@Import(SolarWatchFacade.class) // only facade bean
 class SolarWatchFacadeIT {
 
     @Autowired

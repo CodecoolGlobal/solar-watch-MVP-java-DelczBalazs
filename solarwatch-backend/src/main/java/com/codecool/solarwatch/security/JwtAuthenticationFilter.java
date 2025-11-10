@@ -49,7 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             chain.doFilter(req, res);
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException ex) {
             SecurityContextHolder.clearContext();
-            // this triggers the 401 from SecurityConfig.exceptionHandling
             throw new BadCredentialsException("Invalid JWT", ex);
         }
     }
