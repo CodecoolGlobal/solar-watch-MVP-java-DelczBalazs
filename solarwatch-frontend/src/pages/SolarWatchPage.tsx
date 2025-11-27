@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
-import { getSolar } from '@/features/solar/solar.api'
-import type { SolarResponse } from '@/features/solar/solar.types'
+import { getDashboard } from '@/features/solar/solar.api'
+import type { SolarWatchDashboard } from '@/types/solarwatch'
 import { toast } from '@/components/ui/sonner'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { safeZodResolver } from '@/lib/safeZodResolver'
+import WeatherSummaryCards from '@/components/solarwatch/WeatherSummaryCards'
+import CityMapEmbed from '@/components/solarwatch/CityMapEmbed'
 
 const CITY_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' .-]*[A-Za-zÀ-ÖØ-öø-ÿ]$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
@@ -35,7 +37,7 @@ function todayStr() {
 }
 
 export default function SolarWatchPage() {
-  const [result, setResult] = useState<SolarResponse | null>(null)
+  const [dashboard, setDashboard] = useState<SolarWatchDashboard | null>(null)
   const {
     register,
     handleSubmit,
@@ -50,11 +52,11 @@ export default function SolarWatchPage() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      const data = await getSolar(values.city, values.date)
-      setResult(data)
+      const data = await getDashboard(values.city, values.date)
+      setDashboard(data)
     } catch (err: any) {
-      setResult(null)
-      toast.error('Failed to fetch solar data', {
+      setDashboard(null)
+      toast.error('Failed to fetch dashboard data', {
         description: err?.response?.data?.message || 'Try another city.',
       })
     }
@@ -92,17 +94,17 @@ export default function SolarWatchPage() {
         </CardContent>
       </Card>
 
-      {!result ? (
+      {!dashboard ? (
         <div className="text-center text-white/70">Enter a city to see results.</div>
       ) : (
         <Card>
           <CardHeader>
             <CardTitle>
-              {result.city}
-              {result.country ? `, ${result.country}` : ''}
+              {dashboard.city}
+              {dashboard.country ? `, ${dashboard.country}` : ''}
             </CardTitle>
             <CardDescription>
-              {result.date} — {result.timezone}
+              {dashboard.date} — {dashboard.timezone}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -110,18 +112,25 @@ export default function SolarWatchPage() {
               <div className="glass p-4">
                 <div className="text-sm text-white/70">Sunrise</div>
                 <div className="text-2xl font-semibold">
-                  {new Date(result.sunrise).toLocaleTimeString()}
+                  {new Date(dashboard.sunrise).toLocaleTimeString()}
                 </div>
               </div>
               <div className="glass p-4">
                 <div className="text-sm text-white/70">Sunset</div>
                 <div className="text-2xl font-semibold">
-                  {new Date(result.sunset).toLocaleTimeString()}
+                  {new Date(dashboard.sunset).toLocaleTimeString()}
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {dashboard && (
+        <div className="space-y-6">
+          <WeatherSummaryCards weather={dashboard.weather} />
+          <CityMapEmbed cityName={`${dashboard.city}${dashboard.country ? ', ' + dashboard.country : ''}`} />
+        </div>
       )}
     </div>
   )

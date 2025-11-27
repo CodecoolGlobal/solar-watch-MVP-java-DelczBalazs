@@ -4,6 +4,7 @@ import com.codecool.solarwatch.dto.openweather.OpenWeatherDirectItemDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -32,7 +33,11 @@ public class OpenWeatherClient {
                 .encode()
                 .toUri();
 
-        OpenWeatherDirectItemDto[] items = http.getForObject(url, OpenWeatherDirectItemDto[].class);
-        return (items != null && items.length > 0) ? items[0] : null;
+        try {
+            OpenWeatherDirectItemDto[] items = http.getForObject(url, OpenWeatherDirectItemDto[].class);
+            return (items != null && items.length > 0) ? items[0] : null;
+        } catch (Exception e) {
+            throw new RestClientException("OpenWeather geocoding failed", e);
+        }
     }
 }
