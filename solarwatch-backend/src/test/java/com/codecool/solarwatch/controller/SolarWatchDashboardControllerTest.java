@@ -44,7 +44,7 @@ class SolarWatchDashboardControllerTest {
                 OffsetDateTime.parse("2025-08-23T18:00:00Z"),
                 new SunTimesResponseDto.SourceMeta("db+openweather", "db+sunrise-sunset")
         );
-        WeatherDetailsDto weather = new WeatherDetailsDto(22.0, 21.0, 4, 60, 12.3, "NE");
+        WeatherDetailsDto weather = new WeatherDetailsDto(22.0, 21.0, 60, 12.3, "NE", 1015);
 
         when(facade.getSunTimes("Budapest", null, null, date, "UTC")).thenReturn(base);
         when(weatherService.getWeather("Budapest", date)).thenReturn(weather);
@@ -53,7 +53,7 @@ class SolarWatchDashboardControllerTest {
 
         assertThat(dto.city()).isEqualTo("Budapest");
         assertThat(dto.sunrise()).isEqualTo(base.sunrise());
-        assertThat(dto.weather().uvIndex()).isEqualTo(4);
+        assertThat(dto.weather().pressureHpa()).isEqualTo(1015);
 
         verify(weatherService).getWeather("Budapest", date);
     }

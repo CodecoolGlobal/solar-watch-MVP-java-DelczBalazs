@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { safeZodResolver } from '@/lib/safeZodResolver'
+import Loading from '@/components/loading/Loading'
 
 const EMAIL_RE = /^(?!\.)(?!.*\.\.)[A-Za-z0-9_'+\-.]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/
 const FULLNAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ'\- ]+[A-Za-zÀ-ÖØ-öø-ÿ]$/
@@ -72,6 +73,9 @@ export default function RegisterPage() {
           <CardDescription>Start using SolarWatch</CardDescription>
         </CardHeader>
         <CardContent>
+          {isSubmitting && (
+            <div className="py-2 flex justify-center"><Loading /></div>
+          )}
           <form noValidate onSubmit={handleSubmit(onSubmit, onInvalid)} className="space-y-4">
             <div>
               <Label htmlFor="fullName">Full name</Label>

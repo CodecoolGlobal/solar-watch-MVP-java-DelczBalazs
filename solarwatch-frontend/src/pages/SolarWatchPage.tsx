@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { safeZodResolver } from '@/lib/safeZodResolver'
 import WeatherSummaryCards from '@/components/solarwatch/WeatherSummaryCards'
 import CityMapEmbed from '@/components/solarwatch/CityMapEmbed'
+import Loading from '@/components/loading/Loading'
 
 const CITY_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' .-]*[A-Za-zÀ-ÖØ-öø-ÿ]$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
@@ -94,7 +95,9 @@ export default function SolarWatchPage() {
         </CardContent>
       </Card>
 
-      {!dashboard ? (
+      {isSubmitting ? (
+        <div className="py-8 flex justify-center"><Loading /></div>
+      ) : !dashboard ? (
         <div className="text-center text-white/70">Enter a city to see results.</div>
       ) : (
         <Card>
@@ -126,7 +129,7 @@ export default function SolarWatchPage() {
         </Card>
       )}
 
-      {dashboard && (
+      {!isSubmitting && dashboard && (
         <div className="space-y-6">
           <WeatherSummaryCards weather={dashboard.weather} />
           <CityMapEmbed cityName={`${dashboard.city}${dashboard.country ? ', ' + dashboard.country : ''}`} />

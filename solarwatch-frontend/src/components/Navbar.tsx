@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 const linkBtn = cn(
   'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none h-10 px-4 text-sm',
 )
-const ghost = cn(linkBtn, 'border border-white/10 bg-transparent hover:bg-white/5')
+const ghost = cn(linkBtn, 'border border-white/10 bg-transparent hover:bg-white/5 cursor-pointer')
 const primary = cn(linkBtn, 'bg-blue-600 text-white hover:bg-blue-500')
 
 export function Navbar() {

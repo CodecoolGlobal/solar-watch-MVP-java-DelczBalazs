@@ -18,8 +18,8 @@ export default function WeatherSummaryCards({ weather }: Props) {
 
       <Card>
         <CardContent className="space-y-1">
-          <div className="text-sm text-white/70">UV Index</div>
-          <div className="text-2xl font-semibold">{weather.uvIndex}</div>
+          <div className="text-sm text-white/70">Pressure</div>
+          <div className="text-2xl font-semibold">{weather.pressureHpa} hPa</div>
         </CardContent>
       </Card>
 

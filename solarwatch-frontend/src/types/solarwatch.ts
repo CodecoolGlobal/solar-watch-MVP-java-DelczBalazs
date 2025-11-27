@@ -6,10 +6,10 @@ export interface Coordinates {
 export interface WeatherDetails {
   temperatureCelsius: number
   feelsLikeCelsius: number
-  uvIndex: number
   humidityPercent: number
   windSpeedKmh: number
   windDirection: string
+  pressureHpa: number
 }
 
 export interface SolarWatchDashboard {

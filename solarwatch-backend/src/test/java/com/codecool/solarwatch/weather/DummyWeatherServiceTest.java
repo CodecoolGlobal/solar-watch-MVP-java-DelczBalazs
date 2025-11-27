@@ -16,9 +16,9 @@ class DummyWeatherServiceTest {
 
         assertThat(dto.temperatureCelsius()).isBetween(-50.0, 60.0);
         assertThat(dto.feelsLikeCelsius()).isBetween(-50.0, 60.0);
-        assertThat(dto.uvIndex()).isBetween(0, 12);
         assertThat(dto.humidityPercent()).isBetween(0, 100);
         assertThat(dto.windSpeedKmh()).isBetween(0.0, 200.0);
         assertThat(dto.windDirection()).isNotBlank();
+        assertThat(dto.pressureHpa()).isBetween(800, 1100);
     }
 }
