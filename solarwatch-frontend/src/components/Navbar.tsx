@@ -17,7 +17,7 @@ export function Navbar() {
   return (
     <nav className="container mx-auto max-w-4xl px-4 py-4 flex items-center justify-between">
       <Link to="/" className="font-semibold">
-        SolarWatch
+        <img title='SolarWatch icon' src="/yellowsun.svg" alt="SolarWatch icon" className="h-8 w-8" />
       </Link>
       <div className="flex items-center gap-2">
         {!isAuthenticated ? (

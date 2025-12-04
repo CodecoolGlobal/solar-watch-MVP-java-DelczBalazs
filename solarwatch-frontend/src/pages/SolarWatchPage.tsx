@@ -12,6 +12,7 @@ import { safeZodResolver } from '@/lib/safeZodResolver'
 import WeatherSummaryCards from '@/components/solarwatch/WeatherSummaryCards'
 import CityMapEmbed from '@/components/solarwatch/CityMapEmbed'
 import Loading from '@/components/loading/Loading'
+import ChatAccordion from '@/components/ai/ChatAccordion'
 
 const CITY_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' .-]*[A-Za-zÀ-ÖØ-öø-ÿ]$/
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
@@ -72,7 +73,7 @@ export default function SolarWatchPage() {
       <Card>
         <CardHeader>
           <CardTitle>SolarWatch</CardTitle>
-          <CardDescription>Find sunrise and sunset times for your city.</CardDescription>
+          <CardDescription>Find weather and other information for your city.</CardDescription>
         </CardHeader>
         <CardContent>
           <form noValidate onSubmit={handleSubmit(onSubmit, onInvalid)} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -143,6 +144,7 @@ export default function SolarWatchPage() {
       {!isSubmitting && dashboard && (
         <div className="space-y-6">
           <WeatherSummaryCards weather={dashboard.weather} />
+          <ChatAccordion city={dashboard.city} />
           <CityMapEmbed cityName={`${dashboard.city}${dashboard.country ? ', ' + dashboard.country : ''}`} />
         </div>
       )}

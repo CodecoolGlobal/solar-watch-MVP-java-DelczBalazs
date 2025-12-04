@@ -9,7 +9,7 @@
 <h3 align="center">SolarWatch</h3>
 
   <p align="center">
-Sunrise/sunset data for a given city using external Geocoding API/Sunset and sunrise times API.
+SolarWatch dashboard with sunrise/sunset, a compact weather summary, a city map embed, and an optional AI chat assistant.
     <br />
     <br />
     <br />
@@ -56,7 +56,14 @@ Sunrise/sunset data for a given city using external Geocoding API/Sunset and sun
 
 ## About The Project
 
-A simple demo app showcasing user authentication and integration with external APIs. The Spring Boot backend consumes public sunrise/sunset APIs and exposes secured REST endpoints; the React + Vite + Tailwind frontend provides a minimal UI for registering, logging in, and viewing sunrise/sunset times for a chosen city. Ideal as a small example of authentication, API consumption, and a full-stack Java/React setup.
+A full‑stack demo showing authentication and multiple integrations on a single dashboard:
+
+- Sunrise and sunset times for a selected city
+- Weather summary cards (temperature, pressure, humidity, wind)
+- Google Maps city embed (Google Cloud Maps Embed API)
+- AI chat assistant (separate Spring Boot microservice) to ask city‑related questions
+
+The backend (Spring Boot) serves the core API. The AI capability is split into a dedicated microservice so secrets (OpenAI key) never reach the browser. The frontend (React + Vite + Tailwind) provides an accordion chat panel, loading states, and a dark, glassy UI.
 
   <p align="center">
 External APIs used:
@@ -68,6 +75,10 @@ External APIs used:
     &middot;
     <a href="https://openweathermap.org/api/geocoding-api">Geocoding API (OpenWeather)</a>
     &middot;
+    <br>
+    &middot;
+    <a href="https://developers.google.com/maps/documentation/embed">Google Maps Embed API (Google Cloud)</a>
+    &middot;
   </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -78,6 +89,18 @@ External APIs used:
 - [![Typescript][Typescript.ts]][Typescript-url]
 - [![Tailwind][Tailwind.css]][Tailwind-url]
 - [![Springboot][Springboot.jar]][Springboot-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Architecture at a glance
+
+- solarwatch-backend (Spring Boot, :8080): authentication and solar endpoints
+- solarwatch-ai-service (Spring Boot, :8082): AI chat microservice calling OpenAI
+- solarwatch-frontend (Vite React, :5173): UI with Vite proxy to backend and AI service
+
+Dev proxy (Vite):
+- /api → http://localhost:8080 (backend)
+- /api/ai → http://localhost:8082 (AI microservice)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -141,18 +164,16 @@ This section explains how to run the project locally. Follow the steps below:
 
 ### Prerequisites
 
-- Node.js and npm (for the frontend)
+- Node.js and npm (frontend)
+- Java 21+ (Spring Boot services)
+- IntelliJ IDEA or another IDE
 
-- Java 17+ (for the backend, Spring Boot)
-
-- IntelliJ IDEA or another IDE for the backend
-
-### Installation
+### Installation & Local development
 
 Frontend (React + TypeScript)
 
-1. Navigate to the frontend/ folder.
-2. Install the required packages:
+1. Navigate to `solarwatch-frontend/`
+2. Install packages:
    ```sh
    npm install
    ```
@@ -160,7 +181,7 @@ Frontend (React + TypeScript)
    ```sh
    npm run dev
    ```
-4. Open the given URL in your browser (usually http://localhost:5173/).
+4. Open http://localhost:5173/
 
 Backend (Spring Boot)
 
@@ -182,12 +203,27 @@ Backend (Spring Boot)
 
 ## Usage
 
-Register a new account and log in. While logged in, open the dashboard to view sunrise and sunset times for a chosen city.
+1. Register and log in.
+2. Open the SolarWatch dashboard.
+3. Enter a city to see:
+   - Sunrise and sunset times
+   - Weather summary cards (temperature, pressure, humidity, wind)
+   - Google Maps city embed (if `VITE_GOOGLE_MAPS_EMBED_KEY` is set)
+   - AI Assistant accordion → ask questions about the selected city
 
-1. Register a new account.
-2. Log in to the application.
-3. On the dashboard, enter a city name or select a city from the list.
-4. The dashboard will display the sunrise and sunset times for that city.
+Notes
+- The AI service uses a separate API key on the server. If OpenAI returns 429 (insufficient quota), you’ll see: “The AI service is currently unavailable (quota exceeded). Demo only.”
+- In development, Vite proxies `/api` to :8080 and `/api/ai` to :8082.
+
+### Environment variables
+
+AI microservice (server):
+- `AI_OPENAI_API_KEY` – required
+- `AI_OPENAI_MODEL` – optional (default: gpt-4o-mini)
+
+Frontend:
+- `VITE_GOOGLE_MAPS_EMBED_KEY` – Google Maps Embed API key (Google Cloud) to show the map
+- `VITE_AI_BASE_URL` – optional for production if the AI service is on a different origin; in dev the proxy is used
 
   <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

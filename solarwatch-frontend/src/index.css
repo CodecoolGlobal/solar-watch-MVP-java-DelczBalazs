@@ -19,3 +19,31 @@ html, body, #root {
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgb(0 0 0 / .25);
 }
+
+/* --- Dark scrollbar utility (used in ChatPanel) --- */
+.dark-scrollbar {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255,255,255,.35) rgba(255,255,255,.08);
+}
+.dark-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.dark-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.06);
+  border-radius: 9999px; /* fully rounded ends */
+  background-clip: padding-box;
+  border: 3px solid transparent; /* create inner padding so ends look rounded */
+}
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.35);
+  border: 2px solid rgba(0,0,0,.25);
+  border-radius: 8px;
+}
+.dark-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,.5);
+}
+.dark-scrollbar::-webkit-scrollbar-button { /* hide top/bottom buttons that make square ends */
+  height: 0;
+  width: 0;
+  display: none;
+}
