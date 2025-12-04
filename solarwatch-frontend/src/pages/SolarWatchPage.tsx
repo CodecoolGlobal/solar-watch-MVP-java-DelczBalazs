@@ -75,21 +75,32 @@ export default function SolarWatchPage() {
           <CardDescription>Find sunrise and sunset times for your city.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form noValidate onSubmit={handleSubmit(onSubmit, onInvalid)} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <form noValidate onSubmit={handleSubmit(onSubmit, onInvalid)} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
             <div className="md:col-span-1">
               <Label htmlFor="city">City</Label>
               <Input id="city" placeholder="Budapest" {...register('city')} />
-              {errors.city && <p className="text-sm text-red-400 mt-1">{errors.city.message}</p>}
+              <div className="mt-1 min-h-10">
+                {errors.city && (
+                  <p className="text-sm text-red-400">{errors.city.message}</p>
+                )}
+              </div>
             </div>
             <div className="md:col-span-1">
               <Label htmlFor="date">Date (yyyy-mm-dd)</Label>
               <Input id="date" type="date" {...register('date')} />
-              {errors.date && <p className="text-sm text-red-400 mt-1">{errors.date.message}</p>}
+              <div className="mt-1 min-h-10">
+                {errors.date && (
+                  <p className="text-sm text-red-400">{errors.date.message}</p>
+                )}
+              </div>
             </div>
-            <div className="md:col-span-1 flex items-end">
+            <div className="md:col-span-1 flex flex-col justify-end">
+              {/* placeholder to match label height */}
+              <div className="text-sm font-medium opacity-0 select-none">Search</div>
               <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto">
                 {isSubmitting ? 'Searching...' : 'Search'}
               </Button>
+              <div className="mt-1 min-h-10" />
             </div>
           </form>
         </CardContent>
