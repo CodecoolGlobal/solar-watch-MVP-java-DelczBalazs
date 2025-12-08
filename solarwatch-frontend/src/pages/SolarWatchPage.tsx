@@ -125,13 +125,31 @@ export default function SolarWatchPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="glass p-4">
-                <div className="text-sm text-white/70">Sunrise</div>
+                <div className="text-sm text-white/70 flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                    <path d="M3 17h18" />
+                    <path d="M12 3v6" />
+                    <path d="M5 12l2 2" />
+                    <path d="M19 12l-2 2" />
+                    <path d="M8 17a4 4 0 0 1 8 0" />
+                  </svg>
+                  Sunrise
+                </div>
                 <div className="text-2xl font-semibold">
                   {new Date(dashboard.sunrise).toLocaleTimeString()}
                 </div>
               </div>
               <div className="glass p-4">
-                <div className="text-sm text-white/70">Sunset</div>
+                <div className="text-sm text-white/70 flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                    <path d="M3 17h18" />
+                    <path d="M12 9v6" />
+                    <path d="M5 14l2-2" />
+                    <path d="M19 14l-2-2" />
+                    <path d="M8 17a4 4 0 0 0 8 0" />
+                  </svg>
+                  Sunset
+                </div>
                 <div className="text-2xl font-semibold">
                   {new Date(dashboard.sunset).toLocaleTimeString()}
                 </div>

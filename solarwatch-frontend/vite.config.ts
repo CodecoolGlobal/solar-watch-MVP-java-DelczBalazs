@@ -13,16 +13,18 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      // Compose can inject these to route inside the Docker network
+      // Fallbacks keep localhost for normal local dev
       '/api/ai': {
-        target: 'http://localhost:8082',
+        target: process.env.VITE_DEV_PROXY_AI || 'http://localhost:8082',
         changeOrigin: true,
       },
       '/api': {
-        target: 'http://localhost:8080',
+        target: process.env.VITE_DEV_PROXY_API || 'http://localhost:8080',
         changeOrigin: true,
       },
       '/ai': {
-        target: 'http://localhost:8082',
+        target: process.env.VITE_DEV_PROXY_AI || 'http://localhost:8082',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/ai/, ''),
       },

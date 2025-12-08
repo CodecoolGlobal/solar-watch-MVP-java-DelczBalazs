@@ -1,0 +1,15 @@
+# Multistage: build React app then serve with Nginx
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+# Copy production Nginx config (provides SPA fallback and reverse proxies)
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+# Copy built static files
+COPY --from=build /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

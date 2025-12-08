@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { askAi } from '@/features/ai/ai.api'
-import Loading from '@/components/loading/Loading'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -65,6 +64,13 @@ export default function ChatPanel({ city, bare = false }: Props) {
     scrollerRef.current?.scrollTo({ top: scrollerRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages])
 
+  // Also scroll when typing indicator appears/disappears
+  useEffect(() => {
+    if (isSending) {
+      scrollerRef.current?.scrollTo({ top: scrollerRef.current.scrollHeight, behavior: 'smooth' })
+    }
+  }, [isSending])
+
   const inner = (
     <>
       {/* suggestions */}
@@ -93,18 +99,31 @@ export default function ChatPanel({ city, bare = false }: Props) {
           {messages.length === 0 ? (
             <div className="text-sm text-white/70">Ask me about your selected city or anything else.</div>
           ) : (
-            messages.map((m, idx) => (
-              <div key={idx} className={m.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
-                <div
-                  className={
-                    'max-w-[85%] px-3 py-2 rounded-lg ' +
-                    (m.role === 'user' ? 'bg-blue-600 text-white' : 'bg-white/10 ring-1 ring-white/10 text-white')
-                  }
-                >
-                  {m.content}
+            <>
+              {messages.map((m, idx) => (
+                <div key={idx} className={m.role === 'user' ? 'flex justify-end' : 'flex justify-start'}>
+                  <div
+                    className={
+                      'max-w-[85%] px-3 py-2 rounded-lg ' +
+                      (m.role === 'user' ? 'bg-blue-600 text-white' : 'bg-white/10 ring-1 ring-white/10 text-white')
+                    }
+                  >
+                    {m.content}
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+              {isSending && (
+                <div className="flex justify-start items-center gap-2">
+                  <div className="flex items-center gap-1 px-1.5 py-1 rounded-full bg-white/10 ring-1 ring-white/5">
+                    <span className="w-1 h-1 rounded-full bg-white/70 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1 h-1 rounded-full bg-white/70 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1 h-1 rounded-full bg-white/70 animate-bounce" style={{ animationDelay: '300ms' }} />
+
+                  </div>
+                  <span className="text-[10px] text-white/50 select-none">Thinking</span>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -119,7 +138,7 @@ export default function ChatPanel({ city, bare = false }: Props) {
           disabled={isSending}
         />
         <Button type="submit" disabled={isSending || question.trim() === ''}>
-          {isSending ? <span className="flex items-center gap-2"><Loading /> Sending...</span> : 'Send'}
+          Send
         </Button>
       </form>
     </>

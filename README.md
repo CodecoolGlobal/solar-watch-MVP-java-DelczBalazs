@@ -108,17 +108,25 @@ Dev proxy (Vite):
 
 ## Getting started with Docker
 
-Run the full stack (frontend + backend + database) using Docker.
+Run the full stack (frontend + backend + AI microservice + database + dev Nginx reverse proxy) using Docker.
 
 ### Prerequisites using Docker
 
 - Docker Desktop (Windows/macOS) or Docker Engine (Linux)
 - Docker Compose v2 (bundled with Docker Desktop)
 
-### Quick start
+### Quick start (single command)
 
 1. Open a terminal and **navigate to the project root** (the folder containing `docker-compose.yml`).
-2. Ensure an `.env` file exists at the project root if your compose/services expect it.
+2. Create a `.env` file with at least:
+   ```env
+   DATABASE_USERNAME=postgres
+   DATABASE_PASSWORD=postgres
+   OPENWEATHER_API_KEY=your_openweather_key
+   AI_OPENAI_API_KEY=sk-...your_openai_key...
+   # Optional for the map widget
+   VITE_GOOGLE_MAPS_EMBED_KEY=your_google_maps_embed_key
+   ```
 3. Build and start the stack in the background:
    ```sh
    docker compose up -d --build
@@ -127,9 +135,13 @@ Run the full stack (frontend + backend + database) using Docker.
    ```sh
    docker compose logs -f
    ```
-5. Open the apps:
-   - Frontend: http://localhost:5173/ (or as configured in `docker-compose.yml`)
-   - Backend API: http://localhost:8080/
+5. Open the app via the dev reverse proxy (Nginx):
+   - App (proxied): http://localhost/  
+     - Nginx forwards `/` → Vite dev server, `/api` → backend, `/api/ai` → AI microservice
+   - Direct services (useful for debugging):
+     - Frontend Vite: http://localhost:5173/
+     - Backend API: http://localhost:8080/
+     - AI health: http://localhost:8082/actuator/health
 
 ### Managing the stack
 
