@@ -37,7 +37,11 @@ export default function RegisterPage() {
   const { register: apiRegister } = useAuth()
   const navigate = useNavigate()
   const location = useLocation() as any
-  const from = location.state?.from || '/solar-watch'
+  const rawFrom = location.state?.from
+  const from =
+    typeof rawFrom === 'string' && !/^\/(login|registration)(\/|\?|$)/.test(rawFrom)
+      ? rawFrom
+      : '/dashboard'
 
   const {
     register,

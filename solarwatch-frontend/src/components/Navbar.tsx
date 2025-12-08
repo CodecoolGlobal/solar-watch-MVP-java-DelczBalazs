@@ -31,7 +31,7 @@ export function Navbar() {
           </>
         ) : (
           <>
-            <Link className={ghost} to="/solar-watch">
+            <Link className={ghost} to="/dashboard">
               Dashboard
             </Link>
             {user ? <Badge className="hidden sm:inline">{user.fullName}</Badge> : null}

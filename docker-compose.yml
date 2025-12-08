@@ -39,6 +39,9 @@ services:
     expose:
       - "8082"
     environment:
+      AI_PROVIDER: ${AI_PROVIDER:-gemini}
+      AI_GEMINI_MODEL: ${AI_GEMINI_MODEL:-gemini-2.5-flash}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       AI_OPENAI_API_KEY: ${AI_OPENAI_API_KEY}
       AI_OPENAI_MODEL: ${AI_OPENAI_MODEL:-gpt-4o-mini}
 

@@ -9,7 +9,7 @@
 <h3 align="center">SolarWatch</h3>
 
   <p align="center">
-SolarWatch dashboard with sunrise/sunset, a compact weather summary, a city map embed, and an optional AI chat assistant.
+SolarWatch is a full-stack Java + React demo that shows authentication, external API integrations (weather, maps, sunrise/sunset) and an AI chat microservice on a single dashboard.
     <br />
     <br />
     <br />
@@ -63,7 +63,7 @@ A full‑stack demo showing authentication and multiple integrations on a single
 - Google Maps city embed (Google Cloud Maps Embed API)
 - AI chat assistant (separate Spring Boot microservice) to ask city‑related questions
 
-The backend (Spring Boot) serves the core API. The AI capability is split into a dedicated microservice so secrets (OpenAI key) never reach the browser. The frontend (React + Vite + Tailwind) provides an accordion chat panel, loading states, and a dark, glassy UI.
+The backend (Spring Boot) serves the core API. The AI capability is split into a dedicated microservice so secrets (AI keys) never reach the browser. The frontend (React + Vite + Tailwind) provides an accordion chat panel, loading states, and a dark, glassy UI.
 
   <p align="center">
 External APIs used:
@@ -95,7 +95,7 @@ External APIs used:
 ## Architecture at a glance
 
 - solarwatch-backend (Spring Boot, :8080): authentication and solar endpoints
-- solarwatch-ai-service (Spring Boot, :8082): AI chat microservice calling OpenAI
+- solarwatch-ai-service (Spring Boot, :8082): AI chat microservice with multi-provider support (Gemini default, OpenAI optional)
 - solarwatch-frontend (Vite React, :5173): UI with Vite proxy to backend and AI service
 
 Dev proxy (Vite):
@@ -123,7 +123,17 @@ Run the full stack (frontend + backend + AI microservice + database + dev Nginx 
    DATABASE_USERNAME=postgres
    DATABASE_PASSWORD=postgres
    OPENWEATHER_API_KEY=your_openweather_key
-   AI_OPENAI_API_KEY=sk-...your_openai_key...
+
+   # AI provider (default: gemini)
+   AI_PROVIDER=gemini
+   GOOGLE_API_KEY=your_gemini_api_key
+   AI_GEMINI_MODEL=gemini-2.5-flash
+
+   # If you prefer OpenAI instead:
+   # AI_PROVIDER=openai
+   # AI_OPENAI_API_KEY=sk-...
+   # AI_OPENAI_MODEL=gpt-4o-mini
+
    # Optional for the map widget
    VITE_GOOGLE_MAPS_EMBED_KEY=your_google_maps_embed_key
    ```
@@ -224,14 +234,19 @@ Backend (Spring Boot)
    - AI Assistant accordion → ask questions about the selected city
 
 Notes
-- The AI service uses a separate API key on the server. If OpenAI returns 429 (insufficient quota), you’ll see: “The AI service is currently unavailable (quota exceeded). Demo only.”
+- The AI service uses a separate API key on the server. If the provider returns 429 (insufficient quota), you’ll see a friendly message in the UI.
 - In development, Vite proxies `/api` to :8080 and `/api/ai` to :8082.
 
 ### Environment variables
 
 AI microservice (server):
-- `AI_OPENAI_API_KEY` – required
-- `AI_OPENAI_MODEL` – optional (default: gpt-4o-mini)
+- `AI_PROVIDER` – gemini (default) or openai
+- For Gemini:
+  - `GOOGLE_API_KEY` – required
+  - `AI_GEMINI_MODEL` – optional (default: gemini-2.5-flash)
+- For OpenAI:
+  - `AI_OPENAI_API_KEY` – required
+  - `AI_OPENAI_MODEL` – optional (default: gpt-4o-mini)
 
 Frontend:
 - `VITE_GOOGLE_MAPS_EMBED_KEY` – Google Maps Embed API key (Google Cloud) to show the map

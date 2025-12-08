@@ -4,6 +4,7 @@ import com.codecool.solarwatch.ai.config.AiProperties;
 import com.codecool.solarwatch.ai.dto.openai.ChatCompletionDtos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @Component
+@ConditionalOnProperty(name = "ai.provider", havingValue = "openai")
 public class OpenAiClient implements AiClient {
 
     private final RestTemplate http;

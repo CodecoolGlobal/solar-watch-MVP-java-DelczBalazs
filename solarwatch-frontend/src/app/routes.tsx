@@ -10,12 +10,14 @@ export const router = createBrowserRouter([
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <Navigate to="/solar-watch" replace /> },
+      { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'registration', element: <RegisterPage /> },
+      // Legacy path redirect to new dashboard URL
+      { path: 'solar-watch', element: <Navigate to="/dashboard" replace /> },
       {
         element: <ProtectedRoute />,
-        children: [{ path: 'solar-watch', element: <SolarWatchPage /> }],
+        children: [{ path: 'dashboard', element: <SolarWatchPage /> }],
       },
     ],
   },
